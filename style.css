@@ -1,39 +1,32 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Style général du body */
+body {
+    font-family: Arial, sans-serif; /* Police simple et propre */
+    text-align: center; /* Centrer le texte et les éléments */
+    background-color: #f0f0f0; /* Fond clair */
+    padding: 20px; /* Un peu de padding autour du contenu */
 }
 
-/* Appliquer Flexbox à la section principale */
-.body {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* 100% de la hauteur de la fenêtre visible */
+/* Style pour le menu déroulant */
+select {
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px; /* Espacement entre le menu et les LED */
+    border-radius: 5px; /* Coins arrondis */
+    border: 1px solid #ccc; /* Bordure simple */
 }
 
-/* Style pour l'en-tête */
-.header {
-    background: red;
-    padding: 20px;
-    text-align: center;
-    color: white;
-    font-size: 24px;
+/* LED : une div pour simuler les LED */
+.led {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Pour les rendre rondes */
+    display: inline-block; /* Les aligner horizontalement */
+    margin: 10px; /* Espacement entre les LED */
+    background-color: #aaa; /* Couleur par défaut (gris) */
 }
 
-/* Style pour la section du contenu */
-.main {
-    background: lightgray;
-    padding: 20px;
-    flex-grow: 1; /* Cela permet à cette section de prendre tout l'espace restant */
-    text-align: center;
-    font-size: 20px;
-}
-
-/* Style pour le pied de page */
-.footer {
-    background: blue;
-    padding: 20px;
-    text-align: center;
-    color: white;
-    font-size: 18px;
+/* Amélioration du design avec un peu d'espacement */
+br {
+    display: block;
+    margin-bottom: 20px; /* Un peu d'espace entre les éléments */
 }

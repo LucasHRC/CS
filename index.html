@@ -3,14 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Flexbox Layout</title>
-    <link rel="stylesheet" href="style.css"> <!-- Lien vers la feuille de style CSS -->
+    <title>LED Control</title>
+    <!-- Lien vers le fichier CSS externe -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="body"> <!-- Section principale -->
-        <div class="header">Header</div> <!-- Header (en-tête) -->
-        <div class="main"><main>Main</main></div> <!-- Section du contenu principal -->
-        <div class="footer">Footer</div> <!-- Footer (pied de page) -->
-    </div>
+
+    <!-- Menu déroulant pour choisir un drapeau -->
+    <select id="flagSelector">
+        <!-- Liste complète des drapeaux tricolores -->
+        <option value="fr">France</option>
+        <option value="it">Italy</option>
+        <option value="de">Germany</option>
+        <option value="al">Albania</option>
+        <option value="dz">Algeria</option>
+        <option value="ad">Andorra</option>
+        <option value="ao">Angola</option>
+        <option value="ar">Argentina</option>
+        <option value="am">Armenia</option>
+        <option value="au">Australia</option>
+        <option value="at">Austria</option>
+        <option value="bh">Bahrain</option>
+        <option value="bd">Bangladesh</option>
+        <option value="be">Belgium</option>
+        <option value="bz">Belize</option>
+        <option value="bo">Bolivia</option>
+        <option value="br">Brazil</option>
+        <option value="ca">Canada</option>
+        <option value="cl">Chile</option>
+        <option value="co">Colombia</option>
+        <option value="cz">Czech Republic</option>
+        <option value="es">Spain</option>
+        <option value="gr">Greece</option>
+        <option value="hr">Croatia</option>
+        <option value="hu">Hungary</option>
+        <option value="in">India</option>
+        <option value="id">Indonesia</option>
+        <option value="ir">Iran</option>
+        <option value="ie">Ireland</option>
+        <option value="it">Italy</option>
+        <option value="jp">Japan</option>
+        <option value="ke">Kenya</option>
+        <option value="kr">South Korea</option>
+        <option value="lt">Lithuania</option>
+        <option value="lv">Latvia</option>
+        <option value="my">Malaysia</option>
+        <option value="ng">Nigeria</option>
+        <option value="pl">Poland</option>
+        <option value="pt">Portugal</option>
+        <option value="ro">Romania</option>
+        <option value="ru">Russia</option>
+        <option value="sk">Slovakia</option>
+        <option value="tr">Turkey</option>
+        <option value="us">United States</option>
+    </select>
+
+    <br><br>
+
+    <!-- Trois "LEDs" simulées par des divs -->
+    <div id="led1" class="led"></div>
+    <div id="led2" class="led"></div>
+    <div id="led3" class="led"></div>
+
+    <script>
+        // Récupération des éléments HTML
+        const led1 = document.getElementById('led1');
+        const led2 = document.getElementById('led2');
+        const led3 = document.getElementById('led3');
+        const flagSelector = document.getElementById('flagSelector');
+
+        // Tableau avec les couleurs des drapeaux tricolores
+        const flags = {
+            fr: ['#0055A4', '#FFFFFF', '#EF4135'],  // France : Bleu, Blanc, Rouge
+            it: ['#009639', '#FFFFFF', '#CE2B37'],  // Italie : Vert, Blanc, Rouge
+            de: ['#000000', '#DD0000', '#FFCE00'],  // Allemagne : Noir, Rouge, Jaune
+            al: ['#e41c1c', '#000000', '#ffffff'],  // Albanie : Rouge, Noir, Blanc
+            dz: ['#006747', '#ffffff', '#d7112d'],  // Algérie : Vert, Blanc, Rouge
+            ad: ['#ffcc00', '#002b7f', '#ff0000'],  // Andorre : Jaune, Bleu, Rouge
+            ao: ['#c00', '#fff', '#ffcc00'],        // Angola : Rouge, Noir, Jaune
+            ar: ['#74acdf', '#ffffff', '#f1c40f'],  // Argentine : Bleu, Blanc, Jaune
+            am: ['#d81e5b', '#3e62ac', '#fcd03c'],  // Arménie : Rouge, Bleu, Orange
+            au: ['#002c5f', '#ffffff', '#ffcc00'],  // Australie : Bleu, Blanc, Jaune
+            at: ['#ed1c24', '#ffffff', '#ed1c24'],  // Autriche : Rouge, Blanc, Rouge
+            bh: ['#9b2d20', '#ffffff', '#9b2d20'],  // Bahreïn : Rouge, Blanc, Rouge
+            bd: ['#006a4e', '#ffffff', '#f42a41'],  // Bangladesh : Vert, Blanc, Rouge
+            be: ['#fcd116', '#ec1c24', '#1b6fa8'],  // Belgique : Jaune, Rouge, Bleu
+            bz: ['#e03c31', '#fff', '#e03c31'],      // Belize : Rouge, Blanc, Rouge
+            bo: ['#d9102c', '#f6d02f', '#009639'],  // Bolivia : Rouge, Jaune, Vert
+            br: ['#00a859', '#ffdc00', '#3e4095'],  // Brésil : Vert, Jaune, Bleu
+            ca: ['#ff0000', '#ffffff', '#ff0000'],  // Canada : Rouge, Blanc, Rouge
+            cl: ['#d52b1e', '#ffffff', '#0033a0'],  // Chili : Rouge, Blanc, Bleu
+            co: ['#fcd116', '#0038a8', '#d62e3a'],  // Colombie : Jaune, Bleu, Rouge
+            cz: ['#004d97', '#ffffff', '#d7142b'],  // République tchèque : Bleu, Blanc, Rouge
+            es: ['#c60c30', '#f1bf00', '#c60c30'],  // Espagne : Rouge, Jaune, Rouge
+            gr: ['#0d5eaf', '#ffffff', '#b8b8b8'],  // Grèce : Bleu, Blanc, Bleu
+            hr: ['#f33a4d', '#0069ad', '#ffffff'],  // Croatie : Rouge, Bleu, Blanc
+            hu: ['#c8102e', '#ffffff', '#00a859'],  // Hongrie : Rouge, Blanc, Vert
+            in: ['#f93b2e', '#ffffff', '#009e49'],  // Inde : Orange, Blanc, Vert
+            id: ['#ff0000', '#ffffff', '#ffffff'],  // Indonésie : Rouge, Blanc, Blanc
+            ir: ['#008c45', '#ffffff', '#d71a34'],  // Iran : Vert, Blanc, Rouge
+            ie: ['#169b62', '#ffffff', '#ff6f20'],  // Irlande : Vert, Blanc, Orange
+            jp: ['#ffffff', '#ffffff', '#bc002d'],  // Japon : Blanc, Blanc, Rouge
+            ke: ['#e30b17', '#000000', '#f6f7f5'],  // Kenya : Rouge, Noir, Vert
+            kr: ['#003478', '#ffffff', '#c60c30'],  // Corée du Sud : Bleu, Blanc, Rouge
+            lt: ['#007a3d', '#ffffff', '#fcd116'],  // Lituanie : Vert, Jaune, Rouge
+            lv: ['#9e2a2f', '#ffffff', '#002b7f'],  // Lettonie : Rouge, Blanc, Bleu
+            my: ['#009639', '#ffffff', '#ffcc00'],  // Malaisie : Vert, Jaune, Rouge
+            ng: ['#006746', '#ffffff', '#d6d6d6'],  // Nigéria : Vert, Blanc, Vert
+            pl: ['#dc143c', '#ffffff', '#ffcc00'],  // Pologne : Rouge, Blanc, Jaune
+            pt: ['#0066b3', '#ffffff', '#ff0000'],  // Portugal : Bleu, Blanc, Rouge
+            ro: ['#001f7d', '#ffffff', '#d52b1e'],  // Roumanie : Bleu, Blanc, Rouge
+            ru: ['#000000', '#ffffff', '#d71a34'],  // Russie : Noir, Blanc, Rouge
+            sk: ['#0d5eaf', '#ffffff', '#e2001a'],  // Slovaquie : Bleu, Blanc, Rouge
+            tr: ['#e30b17', '#ffffff', '#e30b17'],  // Turquie : Rouge, Blanc, Rouge
+            us: ['#bd3d44', '#ffffff', '#004b87'],  // États-Unis : Rouge, Blanc, Bleu
+        };
+
+        // Fonction qui change les couleurs des LEDs
+        flagSelector.addEventListener('change', function() {
+            const selectedFlag = this.value;  // Récupère le drapeau sélectionné
+            const colors = flags[selectedFlag];  // Récupère les couleurs associées
+
+            // Change les couleurs des LEDs
+            led1.style.backgroundColor = colors[0]; // Première LED
+            led2.style.backgroundColor = colors[1]; // Deuxième LED
+            led3.style.backgroundColor = colors[2]; // Troisième LED
+        });
+    </script>
+
 </body>
 </html>
