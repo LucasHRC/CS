@@ -1,32 +1,89 @@
-/* Style général du body */
+/* Style global */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
 body {
-    font-family: Arial, sans-serif; /* Police simple et propre */
-    text-align: center; /* Centrer le texte et les éléments */
-    background-color: #f0f0f0; /* Fond clair */
-    padding: 20px; /* Un peu de padding autour du contenu */
+    background-color: #f7f8f9;
+    font-size: 18px;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
 }
 
-/* Style pour le menu déroulant */
-select {
-    padding: 10px;
+/* Container central */
+.container {
+    text-align: center;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 30px;
+    width: 400px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Input container */
+.input-container {
+    margin-bottom: 30px;
+}
+
+select, input[type="color"] {
+    padding: 15px;
     font-size: 16px;
-    margin-bottom: 20px; /* Espacement entre le menu et les LED */
-    border-radius: 5px; /* Coins arrondis */
-    border: 1px solid #ccc; /* Bordure simple */
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 300px;
 }
 
-/* LED : une div pour simuler les LED */
+select:focus, input[type="color"]:focus {
+    box-shadow: 0 0 10px rgba(0, 122, 255, 0.5);
+}
+
+/* LED container */
+.leds-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
 .led {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%; /* Pour les rendre rondes */
-    display: inline-block; /* Les aligner horizontalement */
-    margin: 10px; /* Espacement entre les LED */
-    background-color: #aaa; /* Couleur par défaut (gris) */
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #ddd;
+    transition: all 0.3s ease;
 }
 
-/* Amélioration du design avec un peu d'espacement */
-br {
-    display: block;
-    margin-bottom: 20px; /* Un peu d'espace entre les éléments */
+.led:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 122, 255, 0.3);
+}
+
+/* Animations et transition */
+h3 {
+    margin-bottom: 20px;
+    color: #5e5e5e;
+}
+
+input[type="color"] {
+    cursor: pointer;
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
 }
