@@ -1,86 +1,62 @@
-# Objectif :
+# Objectif
 
-Réaliser une interface utilisateur pour le micro-contrôleur avec suivi en temps réel des données de température via un capteur.
-
----
-
-## A rendre :
-
-- **Figma** avec sitemap, moodboard
-- **Github** avec :
-    - Code Arduino (pour capteur de température)
-    - Code du site (HTML, CSS et JavaScript pour l'affichage des jauges de température)
-    - `readme.md` avec croquis papier et documentation Figma
-- **Vidéo** de la démo filmée montrant l'interface en action avec la lecture des températures en direct
+Créer une interface utilisateur pour un micro-contrôleur ESP32/8266, permettant de suivre en temps réel les données de température via un capteur. L'interface affiche les températures minimales, maximales et actuelles à l'aide de jauges interactives et d'un graphique de suivi en temps réel. Les données sont envoyées depuis l'ESP32/8266 toutes les 5 secondes via WebSocket.
 
 ---
 
-## Ressources :
+## Contenu à rendre :
+
+- **Figma** : incluant un sitemap et un moodboard pour le design de l'interface.
+- **GitHub** :
+    - Code Arduino (pour le capteur de température et la communication WebSocket avec l'ESP32).
+    - Code du site (HTML, CSS, JavaScript) pour l'affichage des jauges et du graphique de température.
+    - `README.md` : document détaillant le projet, les croquis et la documentation Figma.
+- **Vidéo** : démonstration filmée de l'interface en action avec les relevés de températures en direct.
+
+---
+
+## Ressources utilisées :
 
 - **Polices** : [Google Fonts](https://fonts.google.com/)
-- **Palettes de couleurs** : [Coolors](https://coolors.co/)
-- **Figma** : [Lien vers Figma](https://www.figma.com/files/team/1422910346717224462/recents-and-sharing/recently-viewed?fuid=1422910344360649849)
-- **Inspirations UI** : [Load More](https://loadmo.re/)
-- **Inspiration Portfolio** : [Marc Teyssier](https://marcteyssier.com/)
-- **Commandes CSS** : [Tailwind CSS](https://tailwindcss.com/)
+- **Palette de couleurs** : [Coolors](https://coolors.co/)
+- **Figma pour la conception** : [Lien vers Figma](https://www.figma.com/files/team/1422910346717224462/recents-and-sharing/recently-viewed?fuid=1422910344360649849)
+- **Portfolio Inspiration** : [Marc Teyssier](https://marcteyssier.com/)
 
 ---
 
-## Plan de réalisation :
+## Fonctionnalités de l'interface :
 
-### 1) Sitemap :
+### 1. Affichage en temps réel des températures :
 
-- Suivi de la température en direct via trois jauges :
+- **Températures suivies** :
     - Température minimale
     - Température maximale
     - Température actuelle
-- Réglages et calibration du capteur de température
-- Connexion Wi-Fi pour l'ESP32, permettant de recevoir les données du capteur en direct sur le site
-- Bouton STOP pour réinitialiser la lecture des températures et redémarrer le système
+- **Affichage graphique** : un graphique en temps réel (via Chart.js) pour suivre l'évolution de la température.
+- **Mise à jour automatique** : Les jauges et le graphique se mettent à jour toutes les 5 secondes, en fonction des données envoyées par l'ESP32.
+
+### 2. LED interactives :
+
+- Trois "LEDs" simulées sur l'interface changent de couleur en fonction du drapeau sélectionné.
+
+### 3. Connexion WebSocket avec l'ESP32 :
+
+- **Communication en temps réel** entre l'ESP32 et le site web via WebSocket.
+- **Envoi des données** toutes les 5 secondes (températures minimale, maximale, et actuelle).
+- **Wi-Fi** : L'ESP32 envoie les données après connexion à un réseau Wi-Fi configuré.
 
 ---
 
-### 2) Sketching :
+## Hébergement et configuration WebSocket :
 
-- Liste des fonctionnalités par écran :
-    - Écran principal : affichage des trois jauges pour les températures (minimale, maximale, actuelle)
-    - Écran de réglages : calibration et ajustements du capteur
-    - Écran de connexion Wi-Fi : configuration réseau pour l'ESP32
-- Croquis rapide de chaque écran pour visualiser la disposition des jauges et des boutons
+- **Hébergement** : Hébergement du site avec un serveur WebSocket pour gérer la communication avec l'ESP32 en temps réel.
+- **Librairie WebSocket pour Arduino** : [Arduino WebSocket](https://github.com/Links2004/arduinoWebSockets) pour gérer l'envoi des données du capteur de température au site web.
 
 ---
 
-### 3) Figma :
+## Code Arduino (ESP32) :
 
-- Palette de couleurs
-- Polices et icônes
-- Inspiration pour le design des jauges (look moderne, inspiré des dashboards de données)
-- Version **desktop** et **mobile** de l'interface avec mise en page responsive
-
----
-
-## Hébergement du site et WebSocket :
-
-### Hébergement :
-
-- Héberger un site web et un serveur WebSocket pour la communication en temps réel avec le micro-contrôleur ESP32.
-
-### Utiliser la librairie Arduino WebSocket :
-
-- [Librairie WebSocket Arduino](https://github.com/Links2004/arduinoWebSockets) pour gérer la communication entre le site et le capteur de température.
-
----
-
-### Sur le site :
-
-- Afficher les températures minimales, maximales, et actuelles via des jauges interactives.
-- Les jauges se mettront à jour en temps réel en fonction des données reçues depuis l'ESP32.
-- Ajouter un bouton pour réinitialiser les valeurs minimales et maximales.
-
----
-
-### Sur l’ESP32/8266 :
-
-- Créer le serveur WebSocket pour envoyer les données de température toutes les 5 secondes.
-- Gérer la connexion Wi-Fi pour permettre au site de recevoir les données en temps réel.
-- Programmer l'envoi des valeurs minimales, maximales et actuelles du capteur de température.
+- Le micro-contrôleur ESP32 est programmé pour :
+    - Mesurer les températures minimales, maximales, et actuelles via un capteur.
+    - Envoyer ces valeurs toutes les 5 secondes au site web à l'aide d'un serveur WebSocket.
+    - Gérer la connexion Wi-Fi pour la communication en temps réel.

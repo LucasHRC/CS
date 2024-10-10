@@ -1,50 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LED and Temperature Control with Chart</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script defer src="script.js"></script> <!-- Inclusion du fichier JS séparé -->
-</head>
-<body>
+<html>
+  <head>
+    <title>Contrôle de la LED RGB</title>
+    <script>
+      let connection;
 
-    <!-- Menu déroulant pour choisir un drapeau -->
-    <select id="flagSelector">
-        <option value="fr">France</option>
-        <option value="it">Italy</option>
-        <option value="de">Germany</option>
-        <!-- Ajouter plus de drapeaux si nécessaire -->
-    </select>
+      window.onload = () => {
+        connection = new WebSocket('ws://' + '10.1.224.101' + ':81/');
 
-    <br><br>
+        connection.onopen = () => {
+          console.log("Connected to WebSocket server");
+        };
 
-    <!-- Trois "LEDs" simulées par des divs -->
-    <div id="led1" class="led"></div>
-    <div id="led2" class="led"></div>
-    <div id="led3" class="led"></div>
+        connection.onerror = error => {
+          console.error("WebSocket Error", error);
+        };
 
-    <br><br>
+        connection.onmessage = event => {
+          console.log("Server says:", event.data);
+        };
+      };
 
-    <!-- Jauges de température -->
-    <div class="gauge">
-        <label for="tempMin">Température Min :</label>
-        <div id="tempMin" class="tempValue">15°C</div>
-    </div>
-    <div class="gauge">
-        <label for="tempMax">Température Max :</label>
-        <div id="tempMax" class="tempValue">30°C</div>
-    </div>
-    <div class="gauge">
-        <label for="tempCurrent">Température Actuelle :</label>
-        <div id="tempCurrent" class="tempValue">22°C</div>
-    </div>
-
-    <br><br>
-
-    <!-- Graphique pour suivre la température -->
-    <canvas id="tempChart" width="400" height="200"></canvas>
-
-</body>
+      function sendColor() {
+        const colorInput = document.getElementById("color").value;
+        if (connection.readyState === WebSocket.OPEN) {
+          connection.send(colorInput);
+        } else {
+          alert("WebSocket not connected");
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Contrôle de la LED RGB</h1>
+    <label for="color">Code couleur (#RRGGBB):</label>
+    <input type="text" id="color" placeholder="#FF5733">
+    <button onclick="sendColor()">Envoyer</button>
+  </body>
 </html>
