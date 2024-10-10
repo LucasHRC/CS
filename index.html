@@ -1,40 +1,57 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Contrôle de la LED RGB</title>
+<head>
+    <title>Contrôle LED RGB et Température</title>
     <script>
-      let connection;
+        let connection;
 
-      window.onload = () => {
-        connection = new WebSocket('ws://' + '10.1.224.101' + ':81/');
+        window.onload = () => {
+            const ip = prompt("Entrez l'adresse IP de votre ESP32:", "10.1.224.101");
+            connection = new WebSocket('ws://' + ip + ':81/');
 
-        connection.onopen = () => {
-          console.log("Connected to WebSocket server");
+            connection.onopen = () => {
+                console.log("Connecté au serveur WebSocket");
+                document.getElementById("status").innerText = "Connecté";
+            };
+
+            connection.onerror = error => {
+                console.error("Erreur WebSocket", error);
+                document.getElementById("status").innerText = "Erreur de connexion";
+            };
+
+            connection.onmessage = event => {
+                console.log("Message reçu du serveur:", event.data);
+
+                if (event.data.startsWith("Temperature:")) {
+                    const temp = event.data.split(":")[1];
+                    document.getElementById("temperature").innerText = temp + " °C";
+                }
+            };
         };
 
-        connection.onerror = error => {
-          console.error("WebSocket Error", error);
-        };
-
-        connection.onmessage = event => {
-          console.log("Server says:", event.data);
-        };
-      };
-
-      function sendColor() {
-        const colorInput = document.getElementById("color").value;
-        if (connection.readyState === WebSocket.OPEN) {
-          connection.send(colorInput);
-        } else {
-          alert("WebSocket not connected");
+        function sendColor() {
+            const colorInput = document.getElementById("color").value;
+            if (connection.readyState === WebSocket.OPEN) {
+                if (/^#[0-9A-F]{6}$/i.test(colorInput)) {
+                    connection.send(colorInput);
+                } else {
+                    alert("Veuillez entrer un code couleur valide au format #RRGGBB");
+                }
+            } else {
+                alert("WebSocket non connecté");
+            }
         }
-      }
     </script>
-  </head>
-  <body>
-    <h1>Contrôle de la LED RGB</h1>
-    <label for="color">Code couleur (#RRGGBB):</label>
+</head>
+<body>
+    <h1>Contrôle LED RGB et Température</h1>
+    <p id="status">Connexion en cours...</p>
+
+    <h2>Température actuelle</h2>
+    <p id="temperature">--- °C</p>
+
+    <h2>Envoyer une couleur à la LED</h2>
     <input type="text" id="color" placeholder="#FF5733">
     <button onclick="sendColor()">Envoyer</button>
-  </body>
+</body>
 </html>
