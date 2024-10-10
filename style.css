@@ -1,89 +1,54 @@
-/* Style global */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
-
+/* Style général du body */
 body {
-    background-color: #f7f8f9;
-    font-size: 18px;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-/* Container central */
-.container {
+    font-family: Arial, sans-serif;
     text-align: center;
-    background: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    padding: 30px;
-    width: 400px;
-    max-width: 90%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-color: #f0f0f0;
+    padding: 20px;
 }
 
-/* Input container */
-.input-container {
-    margin-bottom: 30px;
-}
-
-select, input[type="color"] {
-    padding: 15px;
+/* Style pour le menu déroulant */
+select {
+    padding: 10px;
     font-size: 16px;
-    border: none;
-    border-radius: 10px;
-    outline: none;
-    transition: all 0.3s ease;
-    width: 100%;
-    max-width: 300px;
-}
-
-select:focus, input[type="color"]:focus {
-    box-shadow: 0 0 10px rgba(0, 122, 255, 0.5);
-}
-
-/* LED container */
-.leds-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.led {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background-color: #ddd;
-    transition: all 0.3s ease;
-}
-
-.led:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(0, 122, 255, 0.3);
-}
-
-/* Animations et transition */
-h3 {
     margin-bottom: 20px;
-    color: #5e5e5e;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
-input[type="color"] {
-    cursor: pointer;
+/* LED : une div pour simuler les LED */
+.led {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 10px;
+    background-color: #aaa;
 }
 
-/* Responsivité */
-@media (max-width: 768px) {
-    .container {
-        width: 90%;
-    }
+/* Style pour les jauges de température */
+.gauge {
+    margin: 20px 0;
+}
+
+.tempValue {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+label {
+    font-size: 16px;
+    margin-bottom: 10px;
+    display: block;
+    color: #555;
+}
+
+/* Style du graphique */
+canvas {
+    margin: 20px auto;
+    display: block;
+    max-width: 800px;   /* Largeur max du graphique */
+    max-height: 400px;  /* Hauteur max du graphique */
+    width: 80%;         /* 80% de la largeur de la fenêtre */
+    height: 50%;        /* 50% de la hauteur de la fenêtre */
 }
