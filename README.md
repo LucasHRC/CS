@@ -55,8 +55,6 @@ Réaliser une interface utilisateur pour le micro-contrôleur avec suivi en temp
 - Palette de couleurs
 - Polices et icônes
 - Inspiration pour le design des jauges (look moderne, inspiré des dashboards de données)
-- Version **desktop** et **mobile** de l'interface avec mise en page responsive
-
 ---
 
 ## Hébergement du site et WebSocket :
