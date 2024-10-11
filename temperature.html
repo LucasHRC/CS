@@ -4,35 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Température ESP32 avec Graphique</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
     <!-- Inclusion de Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Température actuelle</h1>
-        <p id="temperature">--- °C</p>
+        <p id="temperature" class="temp-display">--- °C</p>
 
-        <!-- Section pour le graphique -->
-        <h2>Graphique de la Température</h2>
-        <canvas id="temperatureChart" width="400" height="200"></canvas>
+        <div class="content">
+            <h2>Graphique de la Température</h2>
+            <canvas id="temperatureChart" width="400" height="200"></canvas>
+        </div>
 
         <footer>
-            <a href="index.html">Retour à l'accueil</a>
+            <a href="index.html" class="back-link">Retour à l'accueil</a>
         </footer>
     </div>
 
-    <script src="script.js"></script>
     <script>
         // Initialisation du graphique avec Chart.js
         const ctx = document.getElementById('temperatureChart').getContext('2d');
         const temperatureChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: [],  // Les labels du temps (ou autre indicateur)
+                labels: [],
                 datasets: [{
                     label: 'Température (°C)',
-                    data: [],   // Les données de température à mettre à jour
+                    data: [],
                     borderColor: '#34A0A4',
                     backgroundColor: 'rgba(52, 160, 164, 0.2)',
                     fill: true,
@@ -74,5 +74,6 @@
             temperatureChart.update();  // Mettre à jour le graphique
         }
     </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jeu Snake</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <h1>Jeu Snake</h1>
         <canvas id="snakeCanvas" width="400" height="400"></canvas>
-        <p>Utilisez le joystick pour contrôler le serpent.</p>
+        <p>État du joystick : <span id="joystickStatus">Center</span></p>
+        <p>Score : <span id="score">0</span></p>
+
         <footer>
             <a href="index.html">Retour à l'accueil</a>
         </footer>
@@ -22,79 +24,91 @@
 
         const gridSize = 20;
         let snake = [{ x: 10, y: 10 }];
-        let direction = { x: 1, y: 0 };  // Direction par défaut : vers la droite
+        let direction = { x: 1, y: 0 };
         let food = { x: 5, y: 5 };
-        let snakeLength = 1;
-        let gameSpeed = 200;  // Vitesse du jeu (200ms)
+        let gameSpeed = 200;
+        let score = 0;
 
-        // WebSocket configuration
-        let connection = new WebSocket('ws://10.1.224.101:81/');  // Remplace par l'adresse IP de ton ESP32
+        const joystickStatusElement = document.getElementById('joystickStatus');
+        const scoreElement = document.getElementById('score');
+
+        // Création de la connexion WebSocket
+        let connection = new WebSocket('ws://10.1.224.101:81/');
 
         connection.onopen = () => {
             console.log("Connecté au serveur WebSocket");
         };
 
-        connection.onerror = error => {
-            console.error("Erreur WebSocket", error);
-        };
-
         connection.onmessage = event => {
-            const message = event.data;
+            const message = event.data.trim();
             console.log("Message reçu du serveur:", message);
 
-            // Changer la direction du serpent en fonction des mouvements du joystick
+            // Gestion de la direction du joystick
             if (message.includes("Joystick:Left") && direction.x === 0) {
-                direction = { x: -1, y: 0 };  // Aller à gauche
+                direction = { x: -1, y: 0 };
+                joystickStatusElement.textContent = 'Left';
             } else if (message.includes("Joystick:Right") && direction.x === 0) {
-                direction = { x: 1, y: 0 };   // Aller à droite
-            } else if (message.includes("Joystick:Down") && direction.y === 0) {
-                direction = { x: 0, y: -1 };  // Inversé : Aller vers le haut (anciennement Down)
+                direction = { x: 1, y: 0 };
+                joystickStatusElement.textContent = 'Right';
             } else if (message.includes("Joystick:Up") && direction.y === 0) {
-                direction = { x: 0, y: 1 };   // Inversé : Aller vers le bas (anciennement Up)
+                direction = { x: 0, y: 1 };  // Changement ici
+                joystickStatusElement.textContent = 'Up';
+            } else if (message.includes("Joystick:Down") && direction.y === 0) {
+                direction = { x: 0, y: -1 };  // Changement ici
+                joystickStatusElement.textContent = 'Down';
+            } else if (message.includes("Joystick:Center")) {
+                joystickStatusElement.textContent = 'Center';
             }
         };
 
-        // Boucle de jeu
         function gameLoop() {
-            // Mettre à jour la position du serpent
+            // Déplacement de la tête du serpent
             const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
             snake.unshift(head);
 
-            // Vérifier si le serpent mange une pomme
+            // Vérification si le serpent mange la nourriture
             if (head.x === food.x && head.y === food.y) {
-                food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) };
-                snakeLength++;  // Le serpent grandit
+                food = {
+                    x: Math.floor(Math.random() * (canvas.width / gridSize)),
+                    y: Math.floor(Math.random() * (canvas.height / gridSize))
+                };
+                score++;
+                scoreElement.textContent = score;
             } else {
-                snake.pop();  // Retirer la queue du serpent si la pomme n'est pas mangée
+                snake.pop();
             }
 
-            // Vérifier si le serpent sort des limites du canvas
-            if (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize) {
-                resetGame();  // Réinitialiser le jeu si le serpent touche les bords
+            // Détection de collision avec les murs ou le corps du serpent
+            if (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize || collisionWithSelf()) {
+                resetGame();
             }
 
-            // Effacer le canvas
+            // Affichage du jeu
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Dessiner la pomme
-            ctx.fillStyle = '#D9ED92';
+            ctx.fillStyle = '#D9ED92'; // Couleur de la nourriture
             ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-
-            // Dessiner le serpent
-            ctx.fillStyle = '#34A0A4';
+            ctx.fillStyle = '#34A0A4'; // Couleur du serpent
             snake.forEach(part => {
                 ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize, gridSize);
             });
         }
 
-        // Fonction pour réinitialiser le jeu
-        function resetGame() {
-            snake = [{ x: 10, y: 10 }];
-            snakeLength = 1;
-            direction = { x: 1, y: 0 };  // Réinitialiser la direction vers la droite
+        function collisionWithSelf() {
+            // Vérifie si la tête du serpent entre en collision avec son corps
+            return snake.slice(1).some(part => part.x === snake[0].x && part.y === snake[0].y);
         }
 
-        // Démarrer la boucle de jeu
+        function resetGame() {
+            snake = [{ x: 10, y: 10 }];
+            direction = { x: 1, y: 0 };
+            score = 0;
+            scoreElement.textContent = score;
+            food = {
+                x: Math.floor(Math.random() * (canvas.width / gridSize)),
+                y: Math.floor(Math.random() * (canvas.height / gridSize))
+            };
+        }
+
         setInterval(gameLoop, gameSpeed);
     </script>
 </body>

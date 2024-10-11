@@ -1,16 +1,19 @@
-/* Couleurs */
+/* Palette de couleurs */
 :root {
-    --primary-bg: #D9ED92;
-    --secondary-bg: #34A0A4;
-    --accent-color: #168AAD;
+    --primary-bg: #d5d4d4;
+    --secondary-bg: #fefbfb;
+    --accent-color: #34A0A4;
     --text-color: #1A759F;
-    --button-bg: #1E6091;
+    --button-bg: #168AAD;
     --button-hover-bg: #184E77;
+    --border-color: #D9ED92;
+    --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Style global */
 body {
     margin: 0;
+
     font-family: 'Arial', sans-serif;
     background-color: var(--primary-bg);
     color: var(--text-color);
@@ -18,44 +21,122 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    flex-direction: column;
+    padding: 20px;
 }
 
+/* Conteneur principal */
 .container {
+    background-color: var(--secondary-bg);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px var(--shadow-color);
+    max-width: 1000px;
+    width: 100%;
     text-align: center;
-    padding: 2rem;
 }
 
 h1 {
     font-size: 2.5rem;
     color: var(--accent-color);
+    margin-bottom: 20px;
 }
 
+h2 {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-bottom: 15px;
+}
+
+/* Style du menu */
+.menu {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.menu-item {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    margin: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+.menu-item:hover {
+    background-color: var(--button-hover-bg);
+    transform: translateY(-3px);
+}
+
+/* Style pour les entrées */
 input[type="text"] {
-    padding: 10px;
-    border: 2px solid var(--button-bg);
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
+/* Style des boutons */
 button {
     background-color: var(--button-bg);
     color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
     border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
     background-color: var(--button-hover-bg);
 }
 
+/* Canvas pour le jeu Snake */
 canvas {
-    border: 2px solid var(--button-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px var(--shadow-color);
+    max-width: 100%;
 }
 
 footer {
-    margin-top: 20px;
-    text-align: center;
+    margin-top: 30px;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+/* Responsive design pour mobile */
+@media (max-width: 768px) {
+    .menu {
+        flex-direction: column;
+    }
+
+    .menu-item {
+        width: 80%;
+        margin: 10px auto;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    .container {
+        padding: 30px 20px;
+    }
 }

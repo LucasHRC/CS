@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contrôle LED ESP32</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <h1>Contrôle de la LED</h1>
 
-        <h2>Envoyer une couleur à la LED RGB</h2>
-        <input type="text" id="color" placeholder="#FF5733">
-        <button onclick="sendColor()">Envoyer</button>
+        <div class="content">
+            <h2>Envoyer une couleur à la LED RGB</h2>
+            <input type="text" id="color" placeholder="#FF5733">
+            <button onclick="sendColor()">Envoyer</button>
 
-        <h2>Contrôle de la LED ON/OFF</h2>
-        <button onclick="turnOff()">Éteindre la LED</button>
-        <button onclick="turnOn()">Allumer la LED</button>
+            <h2>Contrôle de la LED ON/OFF</h2>
+            <button onclick="turnOn()">Éteindre la LED</button>
+            <button onclick="turnOff()">Allumer la LED</button>
+        </div>
 
         <footer>
             <a href="index.html">Retour à l'accueil</a>
