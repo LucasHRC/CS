@@ -1,87 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Contrôle LED RGB, LED ON/OFF et Température</title>
-    <script>
-        let connection;
-
-        window.onload = () => {
-            const ip = prompt("Entrez l'adresse IP de votre ESP32:", "10.1.224.101");
-            connection = new WebSocket('ws://' + ip + ':81/');
-
-            connection.onopen = () => {
-                console.log("Connecté au serveur WebSocket");
-                document.getElementById("status").innerText = "Connecté";
-            };
-
-            connection.onerror = error => {
-                console.error("Erreur WebSocket", error);
-                document.getElementById("status").innerText = "Erreur de connexion";
-            };
-
-            connection.onmessage = event => {
-                console.log("Message reçu du serveur:", event.data);
-
-                // Affichage de la température reçue
-                if (event.data.startsWith("Temperature:")) {
-                    const temp = event.data.split(":")[1];
-                    document.getElementById("temperature").innerText = temp + " °C";
-                }
-
-                // Affichage du mouvement du joystick reçu
-                if (event.data.startsWith("Joystick:")) {
-                    const joystickAction = event.data.split(":")[1];
-                    document.getElementById("joystick").innerText = "Mouvement du joystick : " + joystickAction;
-                }
-            };
-        };
-
-        function sendColor() {
-            const colorInput = document.getElementById("color").value;
-            if (connection.readyState === WebSocket.OPEN) {
-                if (/^#[0-9A-F]{6}$/i.test(colorInput)) {
-                    connection.send(colorInput);
-                } else {
-                    alert("Veuillez entrer un code couleur valide au format #RRGGBB");
-                }
-            } else {
-                alert("WebSocket non connecté");
-            }
-        }
-
-        function turnOn() {
-            if (connection.readyState === WebSocket.OPEN) {
-                connection.send("ON"); // Allumer la LED
-            } else {
-                alert("WebSocket non connecté");
-            }
-        }
-
-        function turnOff() {
-            if (connection.readyState === WebSocket.OPEN) {
-                connection.send("OFF"); // Éteindre la LED
-            } else {
-                alert("WebSocket non connecté");
-            }
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Interface - Accueil</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Contrôle LED RGB, LED ON/OFF et Température</h1>
-    <p id="status">Connexion en cours...</p>
+    <div class="container">
+        <h1>Bienvenue dans l'interface ESP32</h1>
 
-    <h2>Température actuelle</h2>
-    <p id="temperature">--- °C</p>
+        <div class="menu">
+            <a href="temperature.html" class="menu-item">Température</a>
+            <a href="led.html" class="menu-item">Contrôle LED</a>
+            <a href="snake.html" class="menu-item">Jeu Snake</a>
+        </div>
+    </div>
 
-    <h2>Mouvement du joystick</h2>
-    <p id="joystick">Aucun mouvement détecté</p> <!-- Section pour afficher les mouvements du joystick -->
-
-    <h2>Envoyer une couleur à la LED RGB</h2>
-    <input type="text" id="color" placeholder="#FF5733">
-    <button onclick="sendColor()">Envoyer</button>
-
-    <h2>Contrôle de la LED ON/OFF</h2>
-    <button onclick="turnOff()">Éteindre la LED</button>
-    <button onclick="turnOn()">Allumer la LED</button>
+    <footer>
+        <p>&copy; 2024 ESP32 Interface</p>
+    </footer>
 </body>
 </html>

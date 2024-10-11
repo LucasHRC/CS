@@ -38,6 +38,12 @@ const int yMax = 3000;  // Seuil pour considérer "up"
 String lastDirection = "";  // Garder trace de la dernière direction envoyée
 int lastButtonState = HIGH; // Bouton non pressé
 
+// Variables pour la gestion du timing
+unsigned long lastTempUpdate = 0;      // Dernière mise à jour de la température (en ms)
+unsigned long lastJoystickUpdate = 0;  // Dernière mise à jour du joystick (en ms)
+const unsigned long tempUpdateInterval = 1000;  // 1 seconde
+const unsigned long joystickInterval = 100;     // 100 ms pour le joystick et autres actions
+
 // Fonction pour calculer la température
 double Thermister(int RawADC) {
     if (RawADC <= 0) {
@@ -83,68 +89,77 @@ void setup() {
 }
 
 void loop() {
-    // Lire la température depuis le capteur
-    int sensorValue = analogRead(TEMP_PIN);
-    Serial.println("Raw sensor value: " + String(sensorValue)); // Vérification de la valeur brute
-    double temperature = Thermister(sensorValue);
+    unsigned long currentMillis = millis();
 
-    // Vérifier que la lecture de la température est valide
-    if (!isnan(temperature)) {
-        String tempString = String(temperature, 2); // Formater la température avec 2 décimales
-        webSocket.broadcastTXT("Temperature:" + tempString);
-        Serial.println("Temperature: " + tempString + " °C");
-    } else {
-        Serial.println("Error: Invalid temperature value.");
-    }
+    // Lire la température toutes les 1 seconde
+    if (currentMillis - lastTempUpdate >= tempUpdateInterval) {
+        lastTempUpdate = currentMillis;
 
-    // Lire les valeurs du joystick
-    int xValue = analogRead(VRx_PIN);
-    int yValue = analogRead(VRy_PIN);
-    int buttonState = digitalRead(SW_PIN);
+        // Lire la température depuis le capteur
+        int sensorValue = analogRead(TEMP_PIN);
+        Serial.println("Raw sensor value: " + String(sensorValue)); // Vérification de la valeur brute
+        double temperature = Thermister(sensorValue);
 
-    // Déterminer la direction du joystick en fonction des valeurs lues
-    String direction = "";
-
-    if (xValue < xMin) {
-        direction = "Left";
-    } else if (xValue > xMax) {
-        direction = "Right";
-    }
-
-    if (yValue < yMin) {
-        direction = "Down";
-    } else if (yValue > yMax) {
-        direction = "Up";
-    }
-
-    if (direction == "") {
-        direction = "Center";  // Si aucune direction n'est détectée
-    }
-
-    // Envoyer l'information de la direction seulement si elle a changé
-    if (direction != lastDirection) {
-        webSocket.broadcastTXT("Joystick:" + direction);
-        Serial.println("Joystick direction: " + direction);
-        lastDirection = direction;
-    }
-
-    // Vérifier si le bouton a été pressé ou relâché
-    if (buttonState != lastButtonState) {
-        if (buttonState == LOW) {
-            Serial.println("Joystick button pressed");
-            webSocket.broadcastTXT("Joystick:ButtonPressed");
+        // Vérifier que la lecture de la température est valide
+        if (!isnan(temperature)) {
+            String tempString = String(temperature, 2); // Formater la température avec 2 décimales
+            webSocket.broadcastTXT("Temperature:" + tempString);
+            Serial.println("Temperature: " + tempString + " °C");
         } else {
-            Serial.println("Joystick button released");
-            webSocket.broadcastTXT("Joystick:ButtonReleased");
+            Serial.println("Error: Invalid temperature value.");
         }
-        lastButtonState = buttonState;
+    }
+
+    // Lire les valeurs du joystick toutes les 100 ms
+    if (currentMillis - lastJoystickUpdate >= joystickInterval) {
+        lastJoystickUpdate = currentMillis;  // Réinitialiser lastJoystickUpdate
+
+        // Lire les valeurs du joystick
+        int xValue = analogRead(VRx_PIN);
+        int yValue = analogRead(VRy_PIN);
+        int buttonState = digitalRead(SW_PIN);
+
+        // Déterminer la direction du joystick en fonction des valeurs lues
+        String direction = "";
+
+        if (xValue < xMin) {
+            direction = "Left";
+        } else if (xValue > xMax) {
+            direction = "Right";
+        }
+
+        if (yValue < yMin) {
+            direction = "Down";
+        } else if (yValue > yMax) {
+            direction = "Up";
+        }
+
+        if (direction == "") {
+            direction = "Center";  // Si aucune direction n'est détectée
+        }
+
+        // Envoyer l'information de la direction seulement si elle a changé
+        if (direction != lastDirection) {
+            webSocket.broadcastTXT("Joystick:" + direction);
+            Serial.println("Joystick direction: " + direction);
+            lastDirection = direction;
+        }
+
+        // Vérifier si le bouton a été pressé ou relâché
+        if (buttonState != lastButtonState) {
+            if (buttonState == LOW) {
+                Serial.println("Joystick button pressed");
+                webSocket.broadcastTXT("Joystick:ButtonPressed");
+            } else {
+                Serial.println("Joystick button released");
+                webSocket.broadcastTXT("Joystick:ButtonReleased");
+            }
+            lastButtonState = buttonState;
+        }
     }
 
     // Gestion des connexions WebSocket
     webSocket.loop();
-
-    // Attendre une courte durée avant la prochaine lecture
-    delay(100);
 }
 
 // Fonction pour gérer les événements WebSocket
