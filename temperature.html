@@ -8,14 +8,14 @@
     <!-- Inclusion de Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body class="fade-in">
     <div class="container">
         <h1>Température actuelle</h1>
         <p id="temperature" class="temp-display">--- °C</p>
 
         <div class="content">
             <h2>Graphique de la Température</h2>
-            <canvas id="temperatureChart" width="400" height="200"></canvas>
+            <canvas id="temperatureChart"></canvas>
         </div>
 
         <footer>
@@ -24,36 +24,101 @@
     </div>
 
     <script>
-        // Initialisation du graphique avec Chart.js
         const ctx = document.getElementById('temperatureChart').getContext('2d');
+
+        // Création d'un dégradé pour la courbe
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(52, 160, 164, 0.5)');
+        gradient.addColorStop(1, 'rgba(52, 160, 164, 0)');
+
+        // Initialisation du graphique avec Chart.js
         const temperatureChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: [],
+                labels: [], // Labels vides au début
                 datasets: [{
                     label: 'Température (°C)',
                     data: [],
                     borderColor: '#34A0A4',
-                    backgroundColor: 'rgba(52, 160, 164, 0.2)',
+                    backgroundColor: gradient,
                     fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    borderWidth: 2,
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuad',
+                },
                 scales: {
                     x: {
                         title: {
                             display: true,
-                            text: 'Temps'
+                            text: 'Temps',
+                            color: '#1A759F',
+                            font: {
+                                size: 14,
+                                weight: '500',
+                            }
+                        },
+                        ticks: {
+                            color: '#1A759F',
+                            font: {
+                                size: 12,
+                            },
+                            maxRotation: 0,
+                            autoSkip: true,
+                        },
+                        grid: {
+                            display: false,
                         }
                     },
                     y: {
+                        grid: {
+                            color: 'rgba(26, 117, 159, 0.1)',
+                        },
                         title: {
                             display: true,
-                            text: 'Température (°C)'
+                            text: 'Température (°C)',
+                            color: '#1A759F',
+                            font: {
+                                size: 14,
+                                weight: '500',
+                            }
                         },
-                        suggestedMin: 0,
-                        suggestedMax: 50
+                        ticks: {
+                            color: '#1A759F',
+                            font: {
+                                size: 12,
+                            },
+                            beginAtZero: true,
+                            suggestedMax: 50
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: '#168AAD',
+                        titleColor: '#FFFFFF',
+                        bodyColor: '#FFFFFF',
+                        titleFont: {
+                            size: 14,
+                            weight: '500',
+                        },
+                        bodyFont: {
+                            size: 12,
+                        },
+                        cornerRadius: 5,
+                        padding: 10
                     }
                 }
             }
@@ -62,16 +127,11 @@
         // Fonction pour ajouter les nouvelles données au graphique
         function updateChart(temperature) {
             const currentTime = new Date().toLocaleTimeString();
-            temperatureChart.data.labels.push(currentTime);  // Ajouter l'heure actuelle aux labels
-            temperatureChart.data.datasets[0].data.push(temperature);  // Ajouter la nouvelle température aux données
+            temperatureChart.data.labels.push(currentTime);
+            temperatureChart.data.datasets[0].data.push(temperature);
 
-            // Garde les 20 dernières valeurs sur le graphique
-            if (temperatureChart.data.labels.length > 20) {
-                temperatureChart.data.labels.shift();  // Supprime le plus ancien label
-                temperatureChart.data.datasets[0].data.shift();  // Supprime la donnée la plus ancienne
-            }
-
-            temperatureChart.update();  // Mettre à jour le graphique
+            // Mise à jour du graphique pour prendre en compte les nouvelles données
+            temperatureChart.update();
         }
     </script>
     <script src="script.js"></script>
