@@ -32,18 +32,36 @@ Créer une interface utilisateur pour un micro-contrôleur ESP32/8266, permettan
     - Température minimale
     - Température maximale
     - Température actuelle
-- **Affichage graphique** : un graphique en temps réel (via Chart.js) pour suivre l'évolution de la température.
-- **Mise à jour automatique** : Les jauges et le graphique se mettent à jour toutes les 5 secondes, en fonction des données envoyées par l'ESP32.
+- **Graphique interactif** :
+    - Affichage en temps réel des données de température sur un graphique animé et dégradé.
+    - Le graphique conserve l'historique des valeurs reçues et adapte son échelle au fur et à mesure de l'ajout de nouvelles données.
+- **Jauges modernes** :
+    - Représentation visuelle intuitive des températures avec des jauges inspirées des tableaux de bord.
+- **Réglages et calibration du capteur de température** :
+    - Ajustements pour calibrer les valeurs de température selon les besoins.
+- **Connexion Wi-Fi pour l'ESP32** :
+    - Permet de recevoir les données du capteur en direct sur le site grâce à une connexion WebSocket.
+- **Bouton STOP** :
+    - Permet de réinitialiser la lecture des températures et de redémarrer le système pour une nouvelle session de suivi.
 
-### 2. LED interactives :
+---
 
-- Trois "LEDs" simulées sur l'interface changent de couleur en fonction du drapeau sélectionné.
+### 2. Sketching :
 
-### 3. Connexion WebSocket avec l'ESP32 :
+- **Liste des fonctionnalités par écran** :
+    - **Écran principal** : affichage des trois jauges pour les températures (minimale, maximale, actuelle) et le graphique de suivi.
+    - **Écran de réglages** : calibration et ajustements du capteur pour un suivi précis.
+    - **Écran de connexion Wi-Fi** : configuration réseau pour l'ESP32, permettant une connexion simple et rapide.
+- **Croquis rapide de chaque écran** pour visualiser la disposition des jauges, du graphique et des boutons.
 
-- **Communication en temps réel** entre l'ESP32 et le site web via WebSocket.
-- **Envoi des données** toutes les 5 secondes (températures minimale, maximale, et actuelle).
-- **Wi-Fi** : L'ESP32 envoie les données après connexion à un réseau Wi-Fi configuré.
+---
+
+### 3. Figma :
+
+- **Palette de couleurs** pour une interface épurée et moderne.
+- **Polices et icônes** adaptées pour un affichage clair des données.
+- **Inspiration pour le design des jauges** : un look moderne, inspiré des dashboards de données pour une meilleure compréhension visuelle.
+- **Versions desktop et mobile** de l'interface avec mise en page responsive pour s'adapter aux différents types d'écrans.
 
 ---
 
@@ -58,5 +76,5 @@ Créer une interface utilisateur pour un micro-contrôleur ESP32/8266, permettan
 
 - Le micro-contrôleur ESP32 est programmé pour :
     - Mesurer les températures minimales, maximales, et actuelles via un capteur.
-    - Envoyer ces valeurs toutes les 5 secondes au site web à l'aide d'un serveur WebSocket.
+    - Envoyer ces valeurs toutes les secondes au site web à l'aide d'un serveur WebSocket.
     - Gérer la connexion Wi-Fi pour la communication en temps réel.
