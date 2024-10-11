@@ -17,8 +17,26 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 // Pin de la LED simple
 #define LED_PIN 8
 
-// Pin du capteur de température (doit être une pin compatible avec les lectures ADC)
-#define TEMP_PIN 2 // Utilisez une broche compatible comme GPIO2
+// Pin du capteur de température
+#define TEMP_PIN 2 // Capteur de température
+
+// Pins du joystick
+#define VRx_PIN 4  // Axe X
+#define VRy_PIN 3  // Axe Y
+#define SW_PIN 21  // Bouton du joystick
+
+// Seuil pour définir les directions
+const int threshold = 100;  // Sensibilité du joystick
+
+// Seuils pour les directions
+const int xMin = 1000;  // Seuil pour considérer "left"
+const int xMax = 3000;  // Seuil pour considérer "right"
+const int yMin = 1000;  // Seuil pour considérer "down"
+const int yMax = 3000;  // Seuil pour considérer "up"
+
+// Variables pour stocker les dernières positions et état du bouton
+String lastDirection = "";  // Garder trace de la dernière direction envoyée
+int lastButtonState = HIGH; // Bouton non pressé
 
 // Fonction pour calculer la température
 double Thermister(int RawADC) {
@@ -37,11 +55,16 @@ double Thermister(int RawADC) {
 
 void setup() {
     Serial.begin(115200);
-    
+
     pinMode(RED1, OUTPUT);
     pinMode(GRN1, OUTPUT);
     pinMode(BLU1, OUTPUT);
-    pinMode(LED_PIN, OUTPUT); // Configurer la pin 8 pour la LED
+    pinMode(LED_PIN, OUTPUT); // Configurer la pin pour la LED simple
+
+    // Configurer les broches du joystick
+    pinMode(VRx_PIN, INPUT);
+    pinMode(VRy_PIN, INPUT);
+    pinMode(SW_PIN, INPUT_PULLUP);  // Le bouton a une résistance pull-up intégrée
 
     // Connexion au Wi-Fi
     WiFi.begin(ssid, password);
@@ -63,7 +86,6 @@ void loop() {
     // Lire la température depuis le capteur
     int sensorValue = analogRead(TEMP_PIN);
     Serial.println("Raw sensor value: " + String(sensorValue)); // Vérification de la valeur brute
-
     double temperature = Thermister(sensorValue);
 
     // Vérifier que la lecture de la température est valide
@@ -75,11 +97,54 @@ void loop() {
         Serial.println("Error: Invalid temperature value.");
     }
 
+    // Lire les valeurs du joystick
+    int xValue = analogRead(VRx_PIN);
+    int yValue = analogRead(VRy_PIN);
+    int buttonState = digitalRead(SW_PIN);
+
+    // Déterminer la direction du joystick en fonction des valeurs lues
+    String direction = "";
+
+    if (xValue < xMin) {
+        direction = "Left";
+    } else if (xValue > xMax) {
+        direction = "Right";
+    }
+
+    if (yValue < yMin) {
+        direction = "Down";
+    } else if (yValue > yMax) {
+        direction = "Up";
+    }
+
+    if (direction == "") {
+        direction = "Center";  // Si aucune direction n'est détectée
+    }
+
+    // Envoyer l'information de la direction seulement si elle a changé
+    if (direction != lastDirection) {
+        webSocket.broadcastTXT("Joystick:" + direction);
+        Serial.println("Joystick direction: " + direction);
+        lastDirection = direction;
+    }
+
+    // Vérifier si le bouton a été pressé ou relâché
+    if (buttonState != lastButtonState) {
+        if (buttonState == LOW) {
+            Serial.println("Joystick button pressed");
+            webSocket.broadcastTXT("Joystick:ButtonPressed");
+        } else {
+            Serial.println("Joystick button released");
+            webSocket.broadcastTXT("Joystick:ButtonReleased");
+        }
+        lastButtonState = buttonState;
+    }
+
     // Gestion des connexions WebSocket
     webSocket.loop();
 
-    // Attendre une seconde avant la prochaine lecture
-    delay(1000);
+    // Attendre une courte durée avant la prochaine lecture
+    delay(100);
 }
 
 // Fonction pour gérer les événements WebSocket

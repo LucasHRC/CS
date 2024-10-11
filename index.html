@@ -22,9 +22,16 @@
             connection.onmessage = event => {
                 console.log("Message reçu du serveur:", event.data);
 
+                // Affichage de la température reçue
                 if (event.data.startsWith("Temperature:")) {
                     const temp = event.data.split(":")[1];
                     document.getElementById("temperature").innerText = temp + " °C";
+                }
+
+                // Affichage du mouvement du joystick reçu
+                if (event.data.startsWith("Joystick:")) {
+                    const joystickAction = event.data.split(":")[1];
+                    document.getElementById("joystick").innerText = "Mouvement du joystick : " + joystickAction;
                 }
             };
         };
@@ -44,7 +51,7 @@
 
         function turnOn() {
             if (connection.readyState === WebSocket.OPEN) {
-                connection.send("OFF"); // Envoyer "OFF" pour allumer la LED
+                connection.send("ON"); // Allumer la LED
             } else {
                 alert("WebSocket non connecté");
             }
@@ -52,7 +59,7 @@
 
         function turnOff() {
             if (connection.readyState === WebSocket.OPEN) {
-                connection.send("ON"); // Envoyer "ON" pour éteindre la LED
+                connection.send("OFF"); // Éteindre la LED
             } else {
                 alert("WebSocket non connecté");
             }
@@ -66,12 +73,15 @@
     <h2>Température actuelle</h2>
     <p id="temperature">--- °C</p>
 
+    <h2>Mouvement du joystick</h2>
+    <p id="joystick">Aucun mouvement détecté</p> <!-- Section pour afficher les mouvements du joystick -->
+
     <h2>Envoyer une couleur à la LED RGB</h2>
     <input type="text" id="color" placeholder="#FF5733">
     <button onclick="sendColor()">Envoyer</button>
 
     <h2>Contrôle de la LED ON/OFF</h2>
-    <button onclick="turnOff()">Éteindre la LED</button> <!-- Inverser les libellés -->
-    <button onclick="turnOn()">Allumer la LED</button> <!-- Inverser les libellés -->
+    <button onclick="turnOff()">Éteindre la LED</button>
+    <button onclick="turnOn()">Allumer la LED</button>
 </body>
 </html>
