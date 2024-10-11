@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Contrôle LED RGB et Température</title>
+    <title>Contrôle LED RGB, LED ON/OFF et Température</title>
     <script>
         let connection;
 
@@ -41,17 +41,37 @@
                 alert("WebSocket non connecté");
             }
         }
+
+        function turnOn() {
+            if (connection.readyState === WebSocket.OPEN) {
+                connection.send("OFF"); // Envoyer "OFF" pour allumer la LED
+            } else {
+                alert("WebSocket non connecté");
+            }
+        }
+
+        function turnOff() {
+            if (connection.readyState === WebSocket.OPEN) {
+                connection.send("ON"); // Envoyer "ON" pour éteindre la LED
+            } else {
+                alert("WebSocket non connecté");
+            }
+        }
     </script>
 </head>
 <body>
-    <h1>Contrôle LED RGB et Température</h1>
+    <h1>Contrôle LED RGB, LED ON/OFF et Température</h1>
     <p id="status">Connexion en cours...</p>
 
     <h2>Température actuelle</h2>
     <p id="temperature">--- °C</p>
 
-    <h2>Envoyer une couleur à la LED</h2>
+    <h2>Envoyer une couleur à la LED RGB</h2>
     <input type="text" id="color" placeholder="#FF5733">
     <button onclick="sendColor()">Envoyer</button>
+
+    <h2>Contrôle de la LED ON/OFF</h2>
+    <button onclick="turnOff()">Éteindre la LED</button> <!-- Inverser les libellés -->
+    <button onclick="turnOn()">Allumer la LED</button> <!-- Inverser les libellés -->
 </body>
 </html>

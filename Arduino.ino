@@ -14,6 +14,9 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 #define GRN1 7
 #define BLU1 6
 
+// Pin de la LED simple
+#define LED_PIN 8
+
 // Pin du capteur de température (doit être une pin compatible avec les lectures ADC)
 #define TEMP_PIN 2 // Utilisez une broche compatible comme GPIO2
 
@@ -38,6 +41,7 @@ void setup() {
     pinMode(RED1, OUTPUT);
     pinMode(GRN1, OUTPUT);
     pinMode(BLU1, OUTPUT);
+    pinMode(LED_PIN, OUTPUT); // Configurer la pin 8 pour la LED
 
     // Connexion au Wi-Fi
     WiFi.begin(ssid, password);
@@ -83,6 +87,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
     if (type == WStype_TEXT) {
         String message = String((char*)payload);
         Serial.printf("Received message: %s\n", message.c_str());
+
+        // Contrôler la LED simple via WebSocket
+        if (message == "ON") {
+            digitalWrite(LED_PIN, HIGH);  // Allumer la LED
+            Serial.println("LED ON");
+        } else if (message == "OFF") {
+            digitalWrite(LED_PIN, LOW);   // Éteindre la LED
+            Serial.println("LED OFF");
+        }
 
         // Si le message est un code couleur #RRGGBB
         if (message.startsWith("#") && message.length() == 7) {
